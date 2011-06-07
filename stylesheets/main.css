@@ -1,0 +1,29 @@
+.main {
+    width: 420px;
+    color: #333;
+}
+.left  {
+    width: 80px;
+    float: left;
+}
+.right  {
+    width: 300px;
+    text-align: left;
+    float: right;
+}
+.buttons {
+    text-align: right;
+}
+.clearfix:after {
+    display:block;
+    clear:both;
+    height:0px;
+    visibility:hidden;
+    content:".";
+}
+.text {
+    width: 50%;
+}
+#jenkins-url {
+    width: 100%;
+}
