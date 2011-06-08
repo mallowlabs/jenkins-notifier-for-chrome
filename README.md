@@ -17,9 +17,9 @@ Credits
 Icons from original [Jenkins](http://jenkins-ci.org/).
 
  * images/icon.png
- * images/blue.gif
- * images/yellow.gif
- * images/red.gif
+ * images/blue.png
+ * images/yellow.png
+ * images/red.png
 
 License (without icons)
 ------------------------------

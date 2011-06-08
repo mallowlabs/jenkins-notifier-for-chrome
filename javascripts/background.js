@@ -32,11 +32,11 @@ $(function(){
     }
 
     function getIcon(result) {
-        var url = "images/blue.gif";
+        var url = "images/blue.png";
         if (result == "UNSTABLE") {
-            url = "images/yellow.gif";
+            url = "images/yellow.png";
         } else if (result == "FAILURE") {
-            url = "images/red.gif";
+            url = "images/red.png";
         }
         return url;
     }
