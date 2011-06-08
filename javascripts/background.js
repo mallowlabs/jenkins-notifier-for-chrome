@@ -5,9 +5,31 @@ $(function(){
         return;
     }
 
+    apiUrl = appendLastSlash(apiUrl);
     var prevBuild = -1;
     var JOB = "job/"
     var API_SUB  = "/lastSuccessfulBuild/api/json";
+    var POLLING_TIME = 60 * 1000;
+
+    $.ajaxSetup({
+        "error": function() {
+            $.fn.desktopNotify(
+                {
+                    picture: getIcon("FAILURE"),
+                    title: "Failed to access to Jenkins",
+                    text : apiUrl
+                }
+            );
+        }
+    });
+
+    function appendLastSlash(url) {
+        var lastChar = url.substring(url.length - 1);
+        if (lastChar != "/") {
+            return url + "/";
+        }
+        return url;
+    }
 
     function getIcon(result) {
         var url = "images/blue.gif";
@@ -18,6 +40,7 @@ $(function(){
         }
         return url;
     }
+
     function getColor(result) {
         var color = [0, 0, 255, 200];
         if (result == "UNSTABLE") {
@@ -33,11 +56,13 @@ $(function(){
     chrome.browserAction.onClicked.addListener(function(tab) {
         window.open(apiUrl + JOB + jobName);
     });
-    
-    var url = apiUrl + JOB + jobName + API_SUB;
-    setInterval(function(){
-        $.getJSON(url, function(json) {
-            if (prevBuild != json.number) {
+
+    function fetch(url) {
+        $.getJSON(url, function(json, result) {
+            if (result != "success") {
+                return;
+            }
+            if (true || prevBuild != json.number) {
                 prevBuild = json.number;
                 chrome.browserAction.setBadgeText({text: String(json.number)});
                 chrome.browserAction.setBadgeBackgroundColor({color: getColor(json.result)});
@@ -50,5 +75,11 @@ $(function(){
                 );
             }
         });
-    }, 1000);
+    }
+
+    var url = apiUrl + JOB + jobName + API_SUB;
+    fetch(url); // first fetch
+    setInterval(function(){
+        fetch(url);
+    }, POLLING_TIME);
 });
