@@ -62,7 +62,7 @@ $(function(){
             if (result != "success") {
                 return;
             }
-            if (true || prevBuild != json.number) {
+            if (prevBuild != json.number) {
                 prevBuild = json.number;
                 chrome.browserAction.setBadgeText({text: String(json.number)});
                 chrome.browserAction.setBadgeBackgroundColor({color: getColor(json.result)});
