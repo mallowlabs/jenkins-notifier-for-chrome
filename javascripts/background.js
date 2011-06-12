@@ -8,7 +8,7 @@ $(function(){
     apiUrl = appendLastSlash(apiUrl);
     var prevBuild = -1;
     var JOB = "job/"
-    var API_SUB  = "/lastSuccessfulBuild/api/json";
+    var API_SUB  = "/lastBuild/api/json";
     var POLLING_TIME = 60 * 1000;
 
     $.ajaxSetup({
