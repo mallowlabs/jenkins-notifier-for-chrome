@@ -39,11 +39,6 @@
                 popup.ondisplay = setting.ondisplay;
                 popup.onclose = setting.onclose;
                 popup.show();
-                if(setting.fade){
-                    setTimeout(function() {
-                        popup.cancel();
-                    }, 3000);
-                }
             }
         }
 

@@ -73,42 +73,37 @@ $(function(){
                     {
                         picture: getIcon(json.result),
                         title: "#" + json.number + " (" + json.result + ")",
-                        text : json.actions[0].causes[0].shortDescription,
-                        fade : json.result == "SUCCESS"
+                        text : json.actions[0].causes[0].shortDescription
                     }
                 );
             }
         });
     }
 
-    function wait(url){
-        console.log(url);
+    function wait(wsUrl, url){
         var ws = $("<div />")
-        ws.bind("websocket::connect",function(){
-            $.fn.desktopNotify(
-                {
-                    title: "Jenkins Notifier for Chrome",
-                    text : "Websocket connection established",
-                    fade : true
-                }
-            );
-        });
         ws.bind("websocket::message", function(_,obj){
             fetch(url);
         });
 
         ws.bind("websocket::error" , function(){
-            wait(url);
+            $.fn.desktopNotify(
+                {
+                    picture: getIcon("FAILURE"),
+                    title: "Failed to access to Jenkins Websocket Notifier",
+                    text : wsUrl
+                }
+            );
         });
 
         ws.webSocket({
-            entry : "ws://dev.codefirst.org:8081/jenkins"
+            entry : wsUrl
         });
     }
 
     var url = apiUrl + JOB + jobName + API_SUB;
     if(useWebsocket){
-        wait(url)
+        wait(websocketUrl, url);
     }else{
         fetch(url); // first fetch
         setInterval(function(){

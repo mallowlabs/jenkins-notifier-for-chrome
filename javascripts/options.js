@@ -30,9 +30,9 @@ $(function() {
     }
     function update(){
         if($("#use-websocket").attr("checked")){
-            $("#websocket-url").val("").attr("disabled","");
+            $("#websocket-url").attr("disabled","");
         }else{
-            $("#websocket-url").val("").attr("disabled","disabled");
+            $("#websocket-url").attr("disabled","disabled");
         }
     }
 

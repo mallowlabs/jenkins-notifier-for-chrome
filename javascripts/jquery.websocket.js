@@ -19,9 +19,18 @@
 	    var obj = jQuery.parseJSON(text.data);
 	    fire('websocket::message', obj);
 	}
-	ws.onerror = function(msg){
-	    fire('websocket::error', msg);
+
+	ws.onerror = function(){
+            console.log(msg);
+	    fire('websocket::error', ws);
 	}
+
+        var id = setInterval(function(){
+            if(ws == null || ws.readyState != 1){
+	        fire('websocket::error', ws);
+                clearInterval(id);
+            }
+        }, 5000);
 	return this;
     }
 })(jQuery);
