@@ -1,7 +1,10 @@
 $(function(){
     var apiUrl = localStorage["jenkins-url"];
     var jobName = localStorage["job-name"];
-    if (apiUrl == null || jobName == null) {
+    var useWebsocket   = localStorage["use-websocket"];
+    var websocketUrl   = localStorage["websocket-url"];
+
+    if (apiUrl == null || jobName == null || (useWebsocket == 'true' && websocketUrl == null)) {
         return;
     }
 
@@ -70,16 +73,46 @@ $(function(){
                     {
                         picture: getIcon(json.result),
                         title: "#" + json.number + " (" + json.result + ")",
-                        text : json.actions[0].causes[0].shortDescription
+                        text : json.actions[0].causes[0].shortDescription,
+                        fade : json.result == "SUCCESS"
                     }
                 );
             }
         });
     }
 
+    function wait(url){
+        console.log(url);
+        var ws = $("<div />")
+        ws.bind("websocket::connect",function(){
+            $.fn.desktopNotify(
+                {
+                    title: "Jenkins Notifier for Chrome",
+                    text : "Websocket connection established",
+                    fade : true
+                }
+            );
+        });
+        ws.bind("websocket::message", function(_,obj){
+            fetch(url);
+        });
+
+        ws.bind("websocket::error" , function(){
+            wait(url);
+        });
+
+        ws.webSocket({
+            entry : "ws://dev.codefirst.org:8081/jenkins"
+        });
+    }
+
     var url = apiUrl + JOB + jobName + API_SUB;
-    fetch(url); // first fetch
-    setInterval(function(){
-        fetch(url);
-    }, POLLING_TIME);
+    if(useWebsocket){
+        wait(url)
+    }else{
+        fetch(url); // first fetch
+        setInterval(function(){
+            fetch(url);
+        }, POLLING_TIME);
+    }
 });

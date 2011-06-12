@@ -30,6 +30,16 @@
                 <input name="job-name" id="job-name" class="text" placeholder="jobname" />
               </div>
             </div>
+            <div class="clearfix">
+              <div class="left">
+                <label>Websocket</label>
+              </div>
+              <div class="right">
+                <input name="use-websocket" id="use-websocket" type="checkbox" /> Use<br />
+                <input name="websocket-url" id="websocket-url" class="text" placeholder="ws://localhost:8081/jenkins" /><br />
+                To use websocket, you need to install <a href="http://github.com/mzp/unageel">Jenkins Websocket Plugin</p>
+              </div>
+            </div>
           </fieldset>
           <div class="buttons">
             <input value="Save" class="button save" type="submit" />

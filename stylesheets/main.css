@@ -24,6 +24,6 @@
 .text {
     width: 50%;
 }
-#jenkins-url {
+#jenkins-url, #websocket-url {
     width: 100%;
 }
