@@ -80,13 +80,13 @@ $(function(){
         });
     }
 
-    function wait(wsUrl, url){
+    function wait(wsUrl, url) {
         var ws = $("<div />")
-        ws.bind("websocket::message", function(_,obj){
+        ws.bind("websocket::message", function(_,obj) {
             fetch(url);
         });
 
-        ws.bind("websocket::error" , function(){
+        ws.bind("websocket::error" , function() {
             $.fn.desktopNotify(
                 {
                     picture: getIcon("FAILURE"),
@@ -102,11 +102,11 @@ $(function(){
     }
 
     var url = apiUrl + JOB + jobName + API_SUB;
-    if(useWebsocket){
+    if (useWebsocket) {
         wait(websocketUrl, url);
-    }else{
+    } else {
         fetch(url); // first fetch
-        setInterval(function(){
+        setInterval(function() {
             fetch(url);
         }, POLLING_TIME);
     }
