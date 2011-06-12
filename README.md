@@ -7,6 +7,11 @@ Features
  * Build notifications.
  * Build result icons(blue / yellow / red).
 
+Authors
+----------------
+ * @mallowlabs
+ * @mzp
+
 Requirement
 ----------------
 
