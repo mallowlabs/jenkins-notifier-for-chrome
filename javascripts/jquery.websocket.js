@@ -25,12 +25,30 @@
 	    fire('websocket::error', ws);
 	}
 
-        var id = setInterval(function(){
+        // detect url error
+        setTimeout(function() {
             if(ws == null || ws.readyState != 1){
 	        fire('websocket::error', ws);
-                clearInterval(id);
             }
         }, 5000);
+
+        // auto reconnect
+        ws.bind("websocket::close", function() {
+            setTimeout(function(){ wait(wsUrl, url); }, 5000);
+        });
+
+        // resume
+        var reload  = 300000;
+        var before = new Date();
+        setInterval(function(){
+            var current = new Date();
+            var diff = current - before;
+            if ( before > reload ) {
+                wait(websocketUrl, url);
+            }
+            before = current;
+        },reload);
+
 	return this;
     }
 })(jQuery);

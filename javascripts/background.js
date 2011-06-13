@@ -90,7 +90,7 @@ $(function(){
             $.fn.desktopNotify(
                 {
                     picture: getIcon("FAILURE"),
-                    title: "Failed to access to Jenkins Websocket Notifier",
+                    title: "Failed to access to Jenkins Websocket Notifier. Please check your websocket URL",
                     text : wsUrl
                 }
             );
