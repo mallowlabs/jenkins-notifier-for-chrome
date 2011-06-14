@@ -80,12 +80,13 @@ $(function(){
         });
     }
 
-    var connecting = false;
+    var retryTime = 2500;
     function bind(wsUrl, url) {
         var ws = $("<div />");
+
         ws.bind("websocket::connect", function() {
             console.log('opened connection');
-            connecting = true;
+            retryTime = 5000;
         });
 
         ws.bind("websocket::message", function(_, obj) {
@@ -104,11 +105,11 @@ $(function(){
 
         // auto reconnect
         ws.bind('websocket::close', function() {
-            connecting = false;
             console.log('closed connection');
-            setTimeout(function(){
+            retryTime *= 2;
+            setTimeout(function() {
                 bind(websocketUrl, url);
-            }, 5000);
+            }, retryTime);
         });
 
         ws.webSocket({
@@ -119,20 +120,6 @@ $(function(){
     var url = apiUrl + JOB + jobName + API_SUB;
 
     if (useWebsocket) {
-        // resume
-        var reload  = 5 * 60 * 1000;
-        var before = new Date();
-        setInterval(function() {
-            var current = new Date();
-            var diff = current - before;
-            if ( diff > reload ) {
-                if (connecting == false) {
-                    bind(websocketUrl, url);
-                }
-            }
-            before = current;
-        }, reload);
-        // first bind
         bind(websocketUrl, url);
     } else {
         fetch(url); // first fetch
