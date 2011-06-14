@@ -80,13 +80,19 @@ $(function(){
         });
     }
 
-    function wait(wsUrl, url) {
-        var ws = $("<div />")
-        ws.bind("websocket::message", function(_,obj) {
+    var connecting = false;
+    function bind(wsUrl, url) {
+        var ws = $("<div />");
+        ws.bind("websocket::connect", function() {
+            console.log('opened connection');
+            connecting = true;
+        });
+
+        ws.bind("websocket::message", function(_, obj) {
             fetch(url);
         });
 
-        ws.bind("websocket::error" , function() {
+        ws.bind("websocket::error", function() {
             $.fn.desktopNotify(
                 {
                     picture: getIcon("FAILURE"),
@@ -96,14 +102,38 @@ $(function(){
             );
         });
 
+        // auto reconnect
+        ws.bind('websocket::close', function() {
+            connecting = false;
+            console.log('closed connection');
+            setTimeout(function(){
+                bind(websocketUrl, url);
+            }, 5000);
+        });
+
         ws.webSocket({
             entry : wsUrl
         });
     }
 
     var url = apiUrl + JOB + jobName + API_SUB;
+
     if (useWebsocket) {
-        wait(websocketUrl, url);
+        // resume
+        var reload  = 5 * 60 * 1000;
+        var before = new Date();
+        setInterval(function() {
+            var current = new Date();
+            var diff = current - before;
+            if ( diff > reload ) {
+                if (connecting == false) {
+                    bind(websocketUrl, url);
+                }
+            }
+            before = current;
+        }, reload);
+        // first bind
+        bind(websocketUrl, url);
     } else {
         fetch(url); // first fetch
         setInterval(function() {
