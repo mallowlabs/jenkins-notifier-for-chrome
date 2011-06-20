@@ -90,7 +90,9 @@ $(function(){
         });
 
         ws.bind("websocket::message", function(_, obj) {
-            fetch(url);
+            if (obj.project == jobName) {
+              fetch(url);
+            }
         });
 
         ws.bind("websocket::error", function() {
