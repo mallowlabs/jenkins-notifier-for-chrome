@@ -1,6 +1,6 @@
 {
     "name": "Jenkins Notifier for Chrome™",
-        "version": "0.2",
+        "version": "0.3",
         "icons": {
             "128": "images/icon.png",
             "48": "images/icon.png",
