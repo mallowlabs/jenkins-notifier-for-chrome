@@ -11,7 +11,8 @@ $(function(){
     apiUrl = appendLastSlash(apiUrl);
     var prevBuild = -1;
     var JOB = "job/"
-    var API_SUB  = "/lastBuild/api/json";
+    var BUILD_NUMBER = "lastBuild"
+    var API_SUB  = "/api/json";
     var POLLING_TIME = 60 * 1000;
 
     $.ajaxSetup({
@@ -64,7 +65,12 @@ $(function(){
         window.open(apiUrl + JOB + jobName);
     });
 
-    function fetch(url) {
+    function fetch(apiUrl, num) {
+        if (num == null) {
+            num = BUILD_NUMBER;
+        }
+        var url = apiUrl + JOB + jobName + "/" + num + API_SUB;
+
         $.getJSON(url, function(json, result) {
             if (result != "success") {
                 return;
@@ -85,7 +91,7 @@ $(function(){
     }
 
     var retryTime = 2500;
-    function bind(wsUrl, url) {
+    function bind(wsUrl, apiUrl) {
         var ws = $("<div />");
 
         ws.bind("websocket::connect", function() {
@@ -95,7 +101,7 @@ $(function(){
 
         ws.bind("websocket::message", function(_, obj) {
             if (obj.project == jobName) {
-              fetch(url);
+                fetch(apiUrl, obj.number);
             }
         });
 
@@ -114,7 +120,7 @@ $(function(){
             console.log('closed connection');
             retryTime *= 2;
             setTimeout(function() {
-                bind(websocketUrl, url);
+                bind(websocketUrl, apiUrl);
             }, retryTime);
         });
 
@@ -123,14 +129,12 @@ $(function(){
         });
     }
 
-    var url = apiUrl + JOB + jobName + API_SUB;
-
-    if (useWebsocket) {
-        bind(websocketUrl, url);
+    if (useWebsocket == 'true') {
+        bind(websocketUrl, apiUrl);
     } else {
-        fetch(url); // first fetch
+        fetch(apiUrl, BUILD_NUMBER); // first fetch
         setInterval(function() {
-            fetch(url);
+            fetch(apiUrl, BUILD_NUMBER);
         }, POLLING_TIME);
     }
 });
