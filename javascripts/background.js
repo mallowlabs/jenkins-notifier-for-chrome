@@ -40,6 +40,8 @@ $(function(){
             url = "images/yellow.png";
         } else if (result == "FAILURE") {
             url = "images/red.png";
+        } else if (result == "ABORTED") {
+            url = "images/grey.png";
         }
         return url;
     }
@@ -50,6 +52,8 @@ $(function(){
             color =  [255, 255, 0, 200];
         } else if (result == "FAILURE") {
             color = [255, 0, 0, 200];
+        } else if (result == "ABORTED") {
+            color = [200, 200, 200, 200];
         }
         return color;
     }
