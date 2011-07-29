@@ -5,7 +5,7 @@ A Google Chrome(TM) extension for [Jenkins](http://jenkins-ci.org/).
 Features
 ----------------
  * Build notifications.
- * Build result icons(blue / yellow / red).
+ * Build result icons(blue / yellow / red / grey).
 
 Authors
 ----------------
@@ -25,6 +25,7 @@ Icons from original [Jenkins](http://jenkins-ci.org/).
  * images/blue.png
  * images/yellow.png
  * images/red.png
+ * images/grey.png
 
 License (without icons)
 ------------------------------
