@@ -15,7 +15,7 @@ $(function() {
         if(localStorage['use-websocket'] == 'true') {
             $("#use-websocket").attr("checked","checked")
         }else{
-            $("#use-websocket").attr("checked","")
+            $("#use-websocket").removeAttr("checked")
         }
         update();
     }
@@ -24,19 +24,20 @@ $(function() {
             var name = elem.attr("name");
             localStorage[name] = elem.attr("value");
         })
-        localStorage['use-websocket'] = $("#use-websocket").attr("checked");
+        localStorage['use-websocket'] = $("#use-websocket").attr("checked") ? 'true' : 'false';
 
         chrome.extension.getBackgroundPage().window.location.reload();
     }
     function update(){
         if($("#use-websocket").attr("checked")){
-            $("#websocket-url").attr("disabled","");
+            $("#websocket-url").removeAttr("disabled");
         }else{
             $("#websocket-url").attr("disabled","disabled");
         }
     }
 
     restore();
+
     $(".save").bind("click", function(e) {
         e.preventDefault();
         save();
@@ -46,4 +47,8 @@ $(function() {
     $("#use-websocket").bind("change",function(e){
         update();
     })
+
+    $("#form").bind("submit", function(e) {
+        window.close();
+    });
 });
