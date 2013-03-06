@@ -3,6 +3,7 @@ $(function(){
     var jobName = localStorage["job-name"];
     var useWebsocket   = localStorage["use-websocket"];
     var websocketUrl   = localStorage["websocket-url"];
+    var notifyOnlyFail = localStorage["notify-only-fail"];
 
     if (apiUrl == null || jobName == null || (useWebsocket == 'true' && websocketUrl == null)) {
         return;
@@ -33,6 +34,13 @@ $(function(){
             return url + "/";
         }
         return url;
+    }
+
+    function isSuccess(result) {
+        if (result == "SUCCESS") {
+          return true
+        }
+        return false;
     }
 
     function getIcon(result) {
@@ -76,6 +84,9 @@ $(function(){
                 return;
             }
             if (prevBuild != json.number) {
+                if(notifyOnlyFail == 'true' && isSuccess(json.result)) {
+                    return;
+                }
                 prevBuild = json.number;
                 chrome.browserAction.setBadgeText({text: String(json.number)});
                 chrome.browserAction.setBadgeBackgroundColor({color: getColor(json.result)});

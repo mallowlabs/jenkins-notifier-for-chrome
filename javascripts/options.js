@@ -17,6 +17,12 @@ $(function() {
         }else{
             $("#use-websocket").removeAttr("checked")
         }
+
+        if(localStorage['notify-only-fail'] == 'true') {
+            $("#notify-only-fail").attr("checked","checked")
+        }else{
+            $("#notify-only-fail").removeAttr("checked")
+        }
         update();
     }
     function save() {
@@ -25,6 +31,7 @@ $(function() {
             localStorage[name] = elem.attr("value");
         })
         localStorage['use-websocket'] = $("#use-websocket").attr("checked") ? 'true' : 'false';
+        localStorage['notify-only-fail'] = $("#notify-only-fail").attr("checked") ? 'true' : 'false';
 
         chrome.extension.getBackgroundPage().window.location.reload();
     }
