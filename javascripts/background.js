@@ -5,7 +5,7 @@ $(function(){
     var websocketUrl   = localStorage["websocket-url"];
     var pollingInterval    = localStorage["polling-interval"];
 
-    if(pollingInterval == null) {
+    if(pollingInterval == null || pollingInterval < 1) {
         pollingInterval = 60; // default 60 sec
     }
 
