@@ -3,6 +3,11 @@ $(function(){
     var jobName = localStorage["job-name"];
     var useWebsocket   = localStorage["use-websocket"];
     var websocketUrl   = localStorage["websocket-url"];
+    var pollingInterval    = localStorage["polling-interval"];
+
+    if(pollingInterval == null || pollingInterval < 1) {
+        pollingInterval = 60; // default 60 sec
+    }
 
     if (apiUrl == null || jobName == null || (useWebsocket == 'true' && websocketUrl == null)) {
         return;
@@ -13,7 +18,7 @@ $(function(){
     var JOB = "job/"
     var BUILD_NUMBER = "lastBuild"
     var API_SUB  = "/api/json";
-    var POLLING_TIME = 60 * 1000;
+    var POLLING_TIME = pollingInterval * 1000;
 
     $.ajaxSetup({
         "error": function() {
