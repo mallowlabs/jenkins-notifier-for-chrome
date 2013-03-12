@@ -1,8 +1,13 @@
 $(function(){
     var apiUrl = localStorage["jenkins-url"];
+    var jobName = localStorage["job-name"];
     var jobNames = localStorage["job-names"];
     var useWebsocket   = localStorage["use-websocket"];
     var websocketUrl   = localStorage["websocket-url"];
+
+    if(jobName != null && jobNames == null) {
+        jobNames = jobName;
+    }
 
     if (apiUrl == null || jobNames == null || (useWebsocket == 'true' && websocketUrl == null)) {
         return;
@@ -144,18 +149,20 @@ $(function(){
     }
 
     function fetchJobs() {
-        jobs = getJobs();
-        l = jobs.length;
-        for(i = 0; i < l; i++) {
+        var jobs = getJobs();
+        var l = jobs.length;
+        var jobName = "";
+        for(var i = 0; i < l; i++) {
             jobName = jobs[i];
             fetch(apiUrl, jobName, BUILD_NUMBER);
         }
     }
 
     function isTargetJob(jobName) {
-        jobs = getJobs();
-        l = jobs.length;
-        for(i = 0; i < l; i++) {
+        var jobs = getJobs();
+        var l = jobs.length;
+        var jobName = "";
+        for(var i = 0; i < l; i++) {
             if(jobName == jobs[i]) {
                 return true;
             }
@@ -164,6 +171,6 @@ $(function(){
     }
 
     function getJobs() {
-        return jobNames.split('/');
+        return jobNames.split("/");
     }
 });
