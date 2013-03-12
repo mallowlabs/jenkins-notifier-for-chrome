@@ -1,10 +1,15 @@
 $(function(){
     var apiUrl = localStorage["jenkins-url"];
     var jobName = localStorage["job-name"];
+    var jobNames = localStorage["job-names"];
     var useWebsocket   = localStorage["use-websocket"];
     var websocketUrl   = localStorage["websocket-url"];
 
-    if (apiUrl == null || jobName == null || (useWebsocket == 'true' && websocketUrl == null)) {
+    if(jobName != null && jobNames == null) {
+        jobNames = jobName;
+    }
+
+    if (apiUrl == null || jobNames == null || (useWebsocket == 'true' && websocketUrl == null)) {
         return;
     }
 
@@ -62,10 +67,10 @@ $(function(){
     // replace popup event
     chrome.browserAction.setPopup({popup : ""});
     chrome.browserAction.onClicked.addListener(function(tab) {
-        window.open(apiUrl + JOB + jobName);
+        window.open(apiUrl);
     });
 
-    function fetch(apiUrl, num) {
+    function fetch(apiUrl, jobName, num) {
         if (num == null) {
             num = BUILD_NUMBER;
         }
@@ -77,8 +82,12 @@ $(function(){
             }
             if (prevBuild != json.number) {
                 prevBuild = json.number;
-                chrome.browserAction.setBadgeText({text: String(json.number)});
-                chrome.browserAction.setBadgeBackgroundColor({color: getColor(json.result)});
+                chrome.browserAction.setBadgeText({text: ""});
+                chrome.browserAction.setBadgeBackgroundColor({color: [0, 0, 0, 0]});
+                if(getJobs().length <= 1) {
+                  chrome.browserAction.setBadgeText({text: String(json.number)});
+                  chrome.browserAction.setBadgeBackgroundColor({color: getColor(json.result)});
+                }
                 $.fn.desktopNotify(
                     {
                         picture: getIcon(json.result),
@@ -100,8 +109,9 @@ $(function(){
         });
 
         ws.bind("websocket::message", function(_, obj) {
-            if (obj.project == jobName) {
-                fetch(apiUrl, obj.number);
+            jobName = obj.project;
+            if (isTargetJob(jobName)) {
+                fetch(apiUrl, jobName, obj.number);
             }
         });
 
@@ -132,9 +142,35 @@ $(function(){
     if (useWebsocket == 'true') {
         bind(websocketUrl, apiUrl);
     } else {
-        fetch(apiUrl, BUILD_NUMBER); // first fetch
+        fetchJobs(); // first fetch
         setInterval(function() {
-            fetch(apiUrl, BUILD_NUMBER);
+            fetchJobs();
         }, POLLING_TIME);
+    }
+
+    function fetchJobs() {
+        var jobs = getJobs();
+        var l = jobs.length;
+        var jobName = "";
+        for(var i = 0; i < l; i++) {
+            jobName = jobs[i];
+            fetch(apiUrl, jobName, BUILD_NUMBER);
+        }
+    }
+
+    function isTargetJob(jobName) {
+        var jobs = getJobs();
+        var l = jobs.length;
+        var jobName = "";
+        for(var i = 0; i < l; i++) {
+            if(jobName == jobs[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function getJobs() {
+        return jobNames.split("/");
     }
 });
