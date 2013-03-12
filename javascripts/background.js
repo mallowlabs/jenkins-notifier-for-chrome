@@ -3,6 +3,7 @@ $(function(){
     var jobName = localStorage["job-name"];
     var useWebsocket   = localStorage["use-websocket"];
     var websocketUrl   = localStorage["websocket-url"];
+    var displayTime      = localStorage["notify-close-delay"];
 
     if (apiUrl == null || jobName == null || (useWebsocket == 'true' && websocketUrl == null)) {
         return;
@@ -14,6 +15,7 @@ $(function(){
     var BUILD_NUMBER = "lastBuild"
     var API_SUB  = "/api/json";
     var POLLING_TIME = 60 * 1000;
+    var DISPLAY_TIME = displayTime * 1000;
 
     $.ajaxSetup({
         "error": function() {
@@ -21,7 +23,8 @@ $(function(){
                 {
                     picture: getIcon("FAILURE"),
                     title: "Failed to access to Jenkins",
-                    text : apiUrl
+                    text : apiUrl,
+                    ondisplay: notifyOnDisplayHandler
                 }
             );
         }
@@ -83,7 +86,8 @@ $(function(){
                     {
                         picture: getIcon(json.result),
                         title: "#" + json.number + " (" + json.result + ")",
-                        text : json.actions[0].causes[0].shortDescription
+                        text : json.actions[0].causes[0].shortDescription,
+                        ondisplay: notifyOnDisplayHandler
                     }
                 );
             }
@@ -110,7 +114,8 @@ $(function(){
                 {
                     picture: getIcon("FAILURE"),
                     title: "Failed to access to Jenkins Websocket Notifier. Please check your websocket URL",
-                    text : wsUrl
+                    text : wsUrl,
+                    ondisplay: notifyOnDisplayHandler
                 }
             );
         });
@@ -136,5 +141,18 @@ $(function(){
         setInterval(function() {
             fetch(apiUrl, BUILD_NUMBER);
         }, POLLING_TIME);
+    }
+
+    function notifyOnDisplayHandler(e) {
+      var notify = e.target;
+      if(DISPLAY_TIME > 0) {
+        notifyLazyClose(notify, DISPLAY_TIME);
+      }
+    }
+
+    function notifyLazyClose(notify, delay) {
+      setTimeout(function(){
+        notify.cancel();
+      }, delay);
     }
 });
