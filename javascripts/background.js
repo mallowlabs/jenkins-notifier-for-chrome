@@ -100,7 +100,7 @@ $(function(){
         });
 
         ws.bind("websocket::message", function(_, obj) {
-            if (obj.project == jobName) {
+            if (!!obj.result && obj.project == jobName) {
                 fetch(apiUrl, obj.number);
             }
         });
