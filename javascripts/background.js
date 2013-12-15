@@ -37,10 +37,7 @@ $(function(){
     }
 
     function isSuccess(result) {
-        if (result == "SUCCESS") {
-          return true
-        }
-        return false;
+        return (result == "SUCCESS");
     }
 
     function getIcon(result) {
@@ -84,7 +81,7 @@ $(function(){
                 return;
             }
             if (prevBuild != json.number) {
-                if(notifyOnlyFail == 'true' && isSuccess(json.result)) {
+                if (notifyOnlyFail == 'true' && isSuccess(json.result)) {
                     return;
                 }
                 prevBuild = json.number;
