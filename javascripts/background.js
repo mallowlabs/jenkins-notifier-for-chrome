@@ -18,13 +18,13 @@ $(function(){
 
     $.ajaxSetup({
         "error": function() {
-            $.fn.desktopNotify(
-                {
-                    picture: getIcon("FAILURE"),
-                    title: "Failed to access to Jenkins",
-                    text : apiUrl
-                }
-            );
+            var option = {
+                type: 'basic',
+                title: "Failed to access to Jenkins",
+                iconUrl: getIcon("FAILURE"),
+                message : apiUrl
+            }
+            chrome.notifications.create("", option, function (id) { /* Do nothing */ });
         }
     });
 
@@ -90,13 +90,13 @@ $(function(){
                 prevBuild = json.number;
                 chrome.browserAction.setBadgeText({text: String(json.number)});
                 chrome.browserAction.setBadgeBackgroundColor({color: getColor(json.result)});
-                $.fn.desktopNotify(
-                    {
-                        picture: getIcon(json.result),
-                        title: "#" + json.number + " (" + json.result + ")",
-                        text : json.actions[0].causes[0].shortDescription
-                    }
-                );
+                var option = {
+                    type: 'basic',
+                    title: "#" + json.number + " (" + json.result + ")",
+                    message : json.actions[0].causes[0].shortDescription,
+                    iconUrl: getIcon(json.result)
+                }
+                chrome.notifications.create("", option, function (id) { /* Do nothing */ });
             }
         });
     }
@@ -117,13 +117,13 @@ $(function(){
         });
 
         ws.bind("websocket::error", function() {
-            $.fn.desktopNotify(
-                {
-                    picture: getIcon("FAILURE"),
-                    title: "Failed to access to Jenkins Websocket Notifier. Please check your websocket URL",
-                    text : wsUrl
-                }
-            );
+            var option = {
+                type: 'basic',
+                title: "Failed to access to Jenkins Websocket Notifier. Please check your websocket URL",
+                text : wsUrl,
+                iconUrl: getIcon("FAILURE")
+            }
+            chrome.notifications.create("", option, function (id) { /* Do nothing */ });
         });
 
         // auto reconnect
