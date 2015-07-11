@@ -27,6 +27,10 @@ Icons from original [Jenkins](http://jenkins-ci.org/).
  * images/red.png
  * images/grey.png
 
+Forks
+----------------
+ * [Pronama-chan Jenkins Notifier for Chrome(TM)](https://github.com/jz5/pronama-chan-jenkins-notifier)
+
 License (without icons)
 ------------------------------
 The MIT License (MIT)
